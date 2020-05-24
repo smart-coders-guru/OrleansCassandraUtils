@@ -1,4 +1,4 @@
-﻿using Cassandra;
+using Cassandra;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

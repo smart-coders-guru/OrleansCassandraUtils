@@ -1,4 +1,4 @@
-﻿using Cassandra;
+using Cassandra;
 using Orleans;
 using Orleans.Runtime;
 using OrleansCassandraUtils.Reminders;
