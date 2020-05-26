@@ -121,13 +121,15 @@ namespace OrleansCassandraUtils.Clustering
             return session.ExecuteAsync(queries.UpdateIAmAliveTime(entry));
         }
 
-        public async Task CleanupDefunctSiloEntries(DateTimeOffset beforeDate)
+        public Task CleanupDefunctSiloEntries(DateTimeOffset beforeDate)
         {
-            var allEntries = (await session.ExecuteAsync(queries.MembershipReadAll())).Select(r => GetMembershipEntry(r));
+            throw new NotImplementedException(); 
+            
+           /* var allEntries = (await session.ExecuteAsync(queries.MembershipReadAll())).Select(r => GetMembershipEntry(r));
 
             foreach (var e in allEntries)
                 if (e.Status == SiloStatus.Dead && new DateTime(Math.Max(e.IAmAliveTime.Ticks, e.StartTime.Ticks)) < beforeDate)
-                    await session.ExecuteAsync(queries.DeleteMembershipEntry(e));
+                    await session.ExecuteAsync(queries.DeleteMembershipEntry(e));*/
         }
     }
 }
