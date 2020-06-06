@@ -122,7 +122,7 @@ namespace OrleansCassandraUtils.Clustering
         }
 
         public async Task CleanupDefunctSiloEntries(DateTimeOffset beforeDate)
-        {
+        {            
             var allEntries = (await session.ExecuteAsync(queries.MembershipReadAll())).Select(r => GetMembershipEntry(r));
 
             foreach (var e in allEntries)

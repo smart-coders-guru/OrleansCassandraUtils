@@ -1,4 +1,5 @@
-CREATE TABLE queries
+//StatementStart
+CREATE TABLE IF NOT EXISTS queries
 (
 	key ascii,
 	text ascii,
@@ -10,7 +11,8 @@ CREATE TABLE queries
 	'enabled' : true
 };
 
-CREATE TABLE membership
+//StatementStart
+CREATE TABLE IF NOT EXISTS membership
 (
 	// Will always be zero, used to send all rows to the same partition for the static version to work 
 	partition_key int,
@@ -31,9 +33,12 @@ CREATE TABLE membership
 	'class' : 'LZ4Compressor',
 	'enabled' : true
 };
-CREATE INDEX ix_membership_status ON membership(status);
 
-CREATE TABLE reminder
+//StatementStart
+CREATE INDEX IF NOT EXISTS ix_membership_status ON membership(status);
+
+//StatementStart
+CREATE TABLE IF NOT EXISTS reminder
 (
 	// We will use a custom partitioning scheme for this table since range queries are needed
 	partition tinyint,
@@ -51,7 +56,8 @@ CREATE TABLE reminder
 	'enabled' : true
 };
 
-CREATE TABLE storage
+//StatementStart
+CREATE TABLE IF NOT EXISTS storage
 (
     grain_type text,
     grain_id blob,
@@ -64,6 +70,7 @@ CREATE TABLE storage
 	'enabled' : true
 };
 
+//StatementStart
 insert into queries(key, consistency_level, text) values 
 (
 	'UpdateIAmAliveTimeKey','quorum','
@@ -77,6 +84,7 @@ insert into queries(key, consistency_level, text) values
 		AND generation = :generation;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values 
 (
 	'InsertMembershipVersionKey','all','
@@ -91,6 +99,7 @@ insert into queries(key, consistency_level, text) values
 	IF NOT EXISTS;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'InsertMembershipKey','all','
@@ -112,6 +121,7 @@ insert into queries(key, consistency_level, text) values
 		version = :expected_version;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'UpdateMembershipKey','all','
@@ -130,6 +140,7 @@ insert into queries(key, consistency_level, text) values
 		version = :expected_version;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values 
 (
 	'DeleteMembershipEntryKey','one','
@@ -142,6 +153,7 @@ insert into queries(key, consistency_level, text) values
 		AND generation = :generation;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'GatewaysQueryKey','one','
@@ -158,6 +170,7 @@ insert into queries(key, consistency_level, text) values
 	ALLOW FILTERING;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'MembershipReadVersionKey','all','
@@ -169,6 +182,7 @@ insert into queries(key, consistency_level, text) values
 		partition_key = 0;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'MembershipReadRowKey','all','
@@ -190,6 +204,7 @@ insert into queries(key, consistency_level, text) values
 		AND generation = :generation;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'MembershipReadAllKey','all','
@@ -209,12 +224,14 @@ insert into queries(key, consistency_level, text) values
 		membership;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'DeleteMembershipTableEntriesKey','all','
 	DELETE FROM membership WHERE partition_key = 0;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'UpsertReminderRowKey','quorum','
@@ -238,6 +255,7 @@ insert into queries(key, consistency_level, text) values
 	);
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'ReadReminderRowsKey','quorum','
@@ -253,6 +271,7 @@ insert into queries(key, consistency_level, text) values
 		AND grain_id = :grain_id; 
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'ReadReminderRowKey','quorum','
@@ -268,6 +287,7 @@ insert into queries(key, consistency_level, text) values
 		AND reminder_name = :reminder_name;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'ReadRemindersInsideRangeKey','quorum','
@@ -284,6 +304,7 @@ insert into queries(key, consistency_level, text) values
 		AND grain_hash <= :grain_hash_end
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'ReadRemindersOutsideRangeKey1','quorum','
@@ -298,6 +319,8 @@ insert into queries(key, consistency_level, text) values
 		partition IN :partitions
 		AND grain_hash > :grain_hash_start;
 ');
+
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'ReadRemindersOutsideRangeKey2','quorum','
@@ -313,6 +336,7 @@ insert into queries(key, consistency_level, text) values
 		AND grain_hash <= :grain_hash_end;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'DeleteReminderRowKey','one','
@@ -326,12 +350,14 @@ insert into queries(key, consistency_level, text) values
 		etag = :etag;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'DeleteReminderRowsKey','one','
 	TRUNCATE reminder;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'WriteToStorageKey','one','
@@ -347,6 +373,7 @@ insert into queries(key, consistency_level, text) values
 		etag = :expected_etag;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'ClearStorageKey','one','
@@ -358,6 +385,7 @@ insert into queries(key, consistency_level, text) values
 		etag = :expected_etag;
 ');
 
+//StatementStart
 insert into queries(key, consistency_level, text) values
 (
 	'ReadFromStorageKey','one','

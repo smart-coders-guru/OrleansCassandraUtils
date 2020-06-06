@@ -208,6 +208,16 @@ namespace OrleansCassandraUtils.Utils
             return queries["DeleteMembershipTableEntriesKey"].Bind(null);
         }
 
+        public IStatement DeleteMembershipEntry(MembershipEntry membershipEntry)
+        {
+            return queries["DeleteMembershipEntryKey"].Bind(new
+            {
+                address = membershipEntry.SiloAddress.Endpoint.Address.ToString(),
+                port = membershipEntry.SiloAddress.Endpoint.Port,
+                generation = membershipEntry.SiloAddress.Generation
+            });
+        }
+
         public IStatement UpdateIAmAliveTime(MembershipEntry membershipEntry)
         {
             return queries["UpdateIAmAliveTimeKey"].Bind(new

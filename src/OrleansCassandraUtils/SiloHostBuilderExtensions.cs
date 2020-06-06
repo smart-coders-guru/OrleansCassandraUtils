@@ -45,6 +45,29 @@ namespace OrleansCassandraUtils
                 });
         }
 
+        public static ISiloBuilder UseCassandraClustering(this ISiloBuilder builder, Action<CassandraClusteringOptions> configureOptions)
+        {
+            return builder.ConfigureServices(
+                services =>
+                {
+                    if (configureOptions != null)
+                        services.Configure(configureOptions);
+
+                    services.AddSingleton<IMembershipTable, CassandraClusteringTable>();
+                });
+        }
+
+
+        public static ISiloBuilder UseCassandraClustering(this ISiloBuilder builder, Action<OptionsBuilder<CassandraClusteringOptions>> configureOptions)
+        {
+            return builder.ConfigureServices(
+                services =>
+                {
+                    configureOptions?.Invoke(services.AddOptions<CassandraClusteringOptions>());
+                    services.AddSingleton<IMembershipTable, CassandraClusteringTable>();
+                });
+        }
+
         public static IClientBuilder UseCassandraClustering(this IClientBuilder builder, Action<CassandraClusteringOptions> configureOptions)
         {
             return builder.ConfigureServices(
@@ -103,6 +126,15 @@ namespace OrleansCassandraUtils
             return builder.ConfigureServices(services => services.AddCassandraGrainStorage(name, configureOptions));
         }
 
+        public static ISiloBuilder AddCassandraGrainStorage(this ISiloBuilder builder, string name, Action<CassandraGrainStorageOptions> configureOptions)
+        {
+            return builder.ConfigureServices(services => services.AddCassandraGrainStorage(name, configureOptions));
+        }
+
+          public static ISiloBuilder AddCassandraGrainStorage(this ISiloBuilder builder, string name, Action<OptionsBuilder<CassandraGrainStorageOptions>> configureOptions = null)
+        {
+            return builder.ConfigureServices(services => services.AddCassandraGrainStorage(name, configureOptions));
+        }
         public static ISiloHostBuilder AddCassandraGrainStorageAsDefault(this ISiloHostBuilder builder, Action<OptionsBuilder<CassandraGrainStorageOptions>> configureOptions = null)
         {
             return builder.AddCassandraGrainStorage(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME, configureOptions);
